@@ -18,8 +18,8 @@ public class SocketFetcher {
     private Socket socket;
     private Thread thread;
 
-    private DataInputStream input;
-    private DataOutputStream output;
+    private ObjectInputStream input;
+    private ObjectOutputStream output;
 
     @SneakyThrows
     public SocketFetcher(SocketServer server, Socket socket, String purpose) {
@@ -29,8 +29,8 @@ public class SocketFetcher {
         this.socket = socket;
         this.server = server;
 
-        this.input = new DataInputStream(socket.getInputStream());
-        this.output = new DataOutputStream(socket.getOutputStream());
+        this.input = new ObjectInputStream(socket.getInputStream());
+        this.output = new ObjectOutputStream(socket.getOutputStream());
 
         SocketFetcher instance = this;
 
@@ -56,12 +56,7 @@ public class SocketFetcher {
 
                     try {
 
-                        int type = input.readInt();
-                        int size = input.readInt();
-
-                        String utf = input.readUTF();
-                        Packet packet = (Packet) Base64.fromString(utf);
-
+                        Packet packet = (Packet) input.readObject();
                         server.fire(instance, packet);
 
                     } catch (Exception e) {
@@ -84,17 +79,17 @@ public class SocketFetcher {
 
         try {
 
-            output.writeInt(-1);
-            output.writeInt(-1);
+            // output.writeInt(-1);
+            // output.writeInt(-1);
 
-            output.writeUTF(Base64.toString(packet));
-            output.flush();
+            // output.writeUTF(Base64.toString(packet));
+            // output.flush();
 
             //System.out.println("PASS1");
 
-            // output.writeObject(packet);
-            // output.flush();
-            // output.reset();
+            output.writeUnshared(packet);
+            output.flush();
+            output.reset();
 
             //System.out.println("PASS4");
 

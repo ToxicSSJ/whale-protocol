@@ -25,8 +25,8 @@ public class SocketClient {
 
     private Map<Class, SocketClientEvent> events;
 
-    private DataInputStream input;
-    private DataOutputStream output;
+    private ObjectInputStream input;
+    private ObjectOutputStream output;
 
     private boolean connected = false;
 
@@ -44,8 +44,8 @@ public class SocketClient {
 
         this.socket = new Socket(url, port);
 
-        this.output = new DataOutputStream(socket.getOutputStream());
-        this.input = new DataInputStream(socket.getInputStream());
+        this.output = new ObjectOutputStream(socket.getOutputStream());
+        this.input = new ObjectInputStream(socket.getInputStream());
 
         connected = true;
 
@@ -58,13 +58,7 @@ public class SocketClient {
                     if(input.available() <= -1)
                         continue;
 
-                    int type = input.readInt();
-                    int size = input.readInt();
-
-                    String utf = input.readUTF();
-
-                    Packet packet = (Packet) Base64.fromString(utf);
-                    // Packet packet = (Packet) input.readObject();
+                    Packet packet = (Packet) input.readObject();
                     fire(packet);
 
                 } catch (Exception e) { }
@@ -84,11 +78,13 @@ public class SocketClient {
             if(output == null)
                 return;
 
-            output.writeInt(-1);
-            output.writeInt(-1);
+            // output.writeInt(-1);
+            // output.writeInt(-1);
 
-            output.writeUTF(Base64.toString(packet));
+            // output.writeUTF(Base64.toString(packet));
+            output.writeUnshared(packet);
             output.flush();
+            output.reset();
 
         } catch(Exception e) {
 
