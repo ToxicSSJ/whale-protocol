@@ -1,0 +1,23 @@
+
+{
+  "server":
+  {
+    "type": "PUBLIC",
+    "private-key": "",
+    "size": 5242880,
+    "host": "127.0.0.1"
+    "port": 7070,
+    "current": 0,
+    "discover-interval": 3,
+    "min-port-range": 50000,
+    "max-port-range": 60000,
+    "nodes":
+    [
+      {
+        "hostname": "127.0.0.1",
+        "port": 7071,
+        "key": "none"
+      }
+    ]
+  }
+}

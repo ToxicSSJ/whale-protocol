@@ -1,0 +1,20 @@
+{
+    // Server Configuration
+    server: {
+        type: "PUBLIC" // PUBLIC or PRIVATE
+        private-key: "" // If is private send this key
+        size: 5242880 // Max Size in bytes
+        port: 7070 // Server Port
+        current: 0 // Current Size since last update
+        discover-interval: 3 // Update interval in seconds
+        min-port-range: 50000 // Min port range for transfer files
+        max-port-range: 60000 // Max port range for transfer files
+        nodes: [
+            {
+                hostname: ""
+                port: 7070
+                key: ""
+            }
+        ]
+    }
+}
