@@ -128,7 +128,7 @@ public class ServerManager extends Context {
 
         this.socketServer.listen(RequestFilePacket.class, ((fetcher, packet) -> {
 
-            System.out.println("LOL 255");
+            logger.net("Request File (" + packet.getSearchId() + ")...");
 
             if(packet.getOriginType() == OriginType.CLIENT) {
 
@@ -270,6 +270,8 @@ public class ServerManager extends Context {
         }));
 
         this.socketServer.listen(RequestSpacePacket.class, ((fetcher, packet) -> {
+
+            logger.net("Request Space (" + packet.getSearchId() + ")...");
 
             if(packet.getOriginType() == OriginType.CLIENT) {
 
@@ -417,6 +419,8 @@ public class ServerManager extends Context {
 
         this.socketServer.listen(ResponseFilePacket.class, ((fetcher, packet) -> {
 
+            logger.net("Response File (" + packet.getSearchId() + ")...");
+
             Optional<TemporalCollector> optionalCollector = getCollector(packet);
 
             if(optionalCollector.isPresent()) {
@@ -430,6 +434,8 @@ public class ServerManager extends Context {
 
         this.socketServer.listen(ResponseSpacePacket.class, ((fetcher, packet) -> {
 
+            logger.net("Response Space (" + packet.getSearchId() + ")...");
+
             Optional<TemporalCollector> optionalCollector = getCollector(packet);
 
             if(optionalCollector.isPresent()) {
@@ -442,6 +448,8 @@ public class ServerManager extends Context {
         }));
 
         this.socketServer.listen(RequestDownloadFilePacket.class, ((fetcher, packet) -> {
+
+            logger.net("Downloading file (" + packet.getSha1() + ")...");
 
             for(WhaleFile file : files) {
 
@@ -471,6 +479,8 @@ public class ServerManager extends Context {
 
             try {
 
+                logger.net("Writing file (" + packet.getFileName() + ")...");
+
                 Files.write(Paths.get("./whale/" + packet.getFileName()), packet.getContent());
                 fetcher.send(ResponseUploadFilePacket.builder().build());
 
@@ -483,6 +493,8 @@ public class ServerManager extends Context {
     }
 
     public void send(String hostname, int port, Packet packet) {
+
+        logger.net("Sending packet (" + packet + ")");
 
         SocketClient socketClient = new SocketClient(hostname, port);
         socketClient.connect();
